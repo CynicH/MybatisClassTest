@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!--    引入properties文件，此后就可以在当前文件中使用的方式来访问value-->
+    <!--    意义：解除耦合，这样只需要修改jdbc.properties就行了-->
+    <properties resource="jdbc.properties"/>
+
+    <!--
+    <typeAliases></typeAliases>
+        类型别名：设置类型别名，即为某个具体的类设置一个别名，在NyBatis范围中，就可以使用别名来表示一个具体的类型
+        MyBatis核心配置文件中的标签必须要按照指定的顺序配置properties?,settings?,typeAliases?,
+        typeHandlers?,objectFactory?,objectWrapperFactory?,reflectorFactory?,plugins?
+        ,environments?,databaseIdProvider?,mappers?
+        type：需要起别名的类型
+        alias：设置的别名
+        只设置type就会有一个默认的别名，就是类名且不区分大小写
+    -->
+    <settings>
+        <!--        将下划线映射为驼峰
+        emp_id:empId,emp_name:empName
+        -->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <!--        开启延迟加载-->
+        <setting name="lazyLoadingEnabled" value="true"/>
+        <!--        开启按需加载-->
+        <setting name="aggressiveLazyLoading" value="false"/>
+    </settings>
+    <!--    如下只需用a就可以表示这个类型-->
+    <!--    <typeAliases>-->
+    <!--        <typeAlias type="com.atguigu.mybatis.pojo.User" alias="a"></typeAlias>-->
+    <!--    </typeAliases>-->
+
+    <typeAliases>
+        <!--    下面这个就会拥有一个默认的别名User，且该别名不区分大小写-->
+        <!--            <typeAlias type="com.atguigu.mybatis.pojo.User"></typeAlias>-->
+        <!--            指定一个包来设置别名，该包下所有类型都将拥有默认的别名，且该别名不区分大小写-->
+        <package name="mybatis.pojo"/>
+    </typeAliases>
+
+
+    <!--    配置连接数据库的环境-->
+    <!--
+    environments:配置连接数据库的环境
+    属性：
+    default：
+    设置默认使用的环境的id
+    -->
+    <environments default="development">
+        <!--
+        id：设置环境的唯一标识，不能改变
+        -->
+        <environment id="development">
+            <!--
+transactionManager：设置事务管理器
+属性：
+type：设置事务管理的方式
+type=JDBC/MANAGED
+JDBC：表示使用JDBC中方原生的事务管理方式
+MANAGED:被管理，例如Spring
+-->
+            <transactionManager type="JDBC"/>
+            <!--
+dataSource：设置数据源
+属性：
+type：设置数据源的类型
+type="POOLED/UNPOOLED/JNDI"
+POOLED:表示使用数据库连接池
+UNPOOLED:不使用数据库连接池，每次获取连接的时候都是重新获取创建连接
+JNDI:表示使用上下文中的数据源
+
+-->
+            <dataSource type="POOLED">
+
+                <!--                驱动类-->
+                <property name="driver" value="${jdbc.driver}"/>
+                <!--                连接数据库的地址-->
+                <property name="url" value="${jdbc.url}"/>
+                <!--                用户名和密码-->
+                <property name="username" value="${jdbc.username}"/>
+                <property name="password" value="${jdbc.password}"/>
+            </dataSource>
+        </environment>
+
+        <environment id="test">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <!--                驱动类-->
+                <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
+                <!--                连接数据库的地址-->
+                <property name="url" value="jdbc:mysql://localhost:3306/ssm?serverTimezone=UTC"/>
+                <!--                用户名和密码-->
+                <property name="username" value="root"/>
+                <property name="password" value="123456"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <!--    引入Mybatis的映射文件-->
+    <mappers>
+        <package name="mybatis.mapper"/>
+    </mappers>
+</configuration>

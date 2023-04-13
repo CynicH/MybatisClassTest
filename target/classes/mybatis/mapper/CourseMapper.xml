@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mybatis.mapper.CourseMapper">
+    <sql id="courseColumns">
+        id,name,hours,sid
+    </sql>
+    <select id="CheckCourseById" resultType="c_course">
+        select *
+        from s_student
+        <where>
+            <choose>
+                <when test="id!=null and id!=''">
+                    id = #{id}
+                </when>
+                <when test="name!= null and name!=''">
+                    name =#{name}
+                </when>
+                <when test="hours!=null and hours!=''">
+                    hours=#{hours}
+                </when>
+                <when test="sid!=null and sid!=''">
+                    sid=#{school}
+                </when>
+            </choose>
+        </where>
+        ;
+    </select>
+<!--void ChangeById(Integer id,Integer number);-->
+    <update id="ChangeById">
+        update s_student
+        set hours =#{number}
+        where id=#{id};
+    </update>
+
+<!--void InsertNew(@Param("id") Integer id,@Param("name") String name,@Param("hours") Integer hours,@Param("school") String school);-->
+<insert id="InsertNew">
+    insert into s_student
+    values(#{id},#{name},#{hours},#{school},null);
+</insert>
+<!--    List<c_course> showAll();-->
+    <resultMap id="a" type="c_course">
+        <id column="id" property="id"></id>
+        <result column="name" property="name"></result>
+        <result column="hours" property="hours"></result>
+        <result column="sid" property="school"></result>
+        <association property="schools" javaType="s_school">
+            <id column="id" property="sid"></id>
+            <result column="schoolname" property="schoolName"></result>
+        </association>
+    </resultMap>
+    <select id="showAll" resultMap="a">
+        select s_school.*,s_student.*
+        from s_school left join s_student
+        on s_school.id=s_student.sid
+        ;
+    </select>
+</mapper>
